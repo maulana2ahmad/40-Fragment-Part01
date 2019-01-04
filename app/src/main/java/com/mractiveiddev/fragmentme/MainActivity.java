@@ -1,15 +1,14 @@
 package com.mractiveiddev.fragmentme;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ListFrag.ItemSelected {
 
     TextView tvDescription;
-    ArrayList<String> description;
+    String [] description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,15 +17,45 @@ public class MainActivity extends AppCompatActivity implements ListFrag.ItemSele
 
         tvDescription = findViewById(R.id.tvDescription);
 
-        description = new ArrayList<String>();
-        description.add("This is descriptionn item 1");
-        description.add("This is descriptionn item 2");
-        description.add("This is descriptionn item 3");
+        description = getResources().getStringArray(R.array.descriptions);
+
+        //tampilan layar phone menjadi portrat
+        if (findViewById(R.id.layout_portrait) != null)
+        {
+            FragmentManager manager = this.getSupportFragmentManager();
+
+            manager.beginTransaction()
+                    .hide(manager.findFragmentById(R.id.detileFrag))
+                    .show(manager.findFragmentById(R.id.listFrag))
+                    .commit();
+        }
+        //tampilan layar phone menjadi landscap
+        if (findViewById(R.id.layout_land)!= null)
+        {
+            FragmentManager manager = this.getSupportFragmentManager();
+
+            manager.beginTransaction()
+                    .show(manager.findFragmentById(R.id.detileFrag))
+                    .show(manager.findFragmentById(R.id.listFrag))
+                    .commit();
+        }
 
     }
 
     @Override
     public void onItemSelected(int index) {
-        tvDescription.setText(description.get(index));
+        tvDescription.setText(description [index]);
+
+        //tampilan layar phone menjadi portrat untuk dapat di klik
+        if (findViewById(R.id.layout_portrait) != null)
+        {
+            FragmentManager manager = this.getSupportFragmentManager();
+
+            manager.beginTransaction()
+                    .show(manager.findFragmentById(R.id.detileFrag))
+                    .hide(manager.findFragmentById(R.id.listFrag))
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
